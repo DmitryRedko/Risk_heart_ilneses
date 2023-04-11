@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		HTML DOM Input Number
+		autocomplete Property
+	</title>
+</head>
+<body style="text-align:center;">
+	<h1 style="color:green;">
+		GeeksForGeeks
+	</h1>
+	<h2>DOM Input Number autocomplete Property</h2>
+	<form id="myGeeks">
+		<input type="number" id="myNumber" step="5"
+				name="geeks" placeholder="multiples of 5"
+				autocomplete="on">
+	</form>
+	<br><br>
+	<button onclick="myFunction()">
+		Click Here!
+	</button>
+	<p id="demo" style="font-size:23px;color:green;"></p>
+	<script>
+		function myFunction() {
+				
+			// Returning Input Number autocomplete Property
+			var x =
+			document.getElementById("myNumber").autocomplete;
+			
+			document.getElementById("demo").innerHTML = x;
+		}
+	</script>
+</body>
+</html>

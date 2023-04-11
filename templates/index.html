@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Определение вероятности наличия сердечно-сосудистых патологий</title>
+  <link rel="stylesheet" type="text/css" href="{{url_for('static', filename = 'css/style.css')}}">
+</head>
+
+<body>
+  <h1>Определение вероятности наличия сердечно-сосудистых патологий</h1>
+  <div class="tab">
+    <button class="tab-link active" onclick="openTab(event, 'predict-tab')">Прогноз</button>
+    <button class="tab-link" onclick="openTab(event, 'add-tab')">Добавить данные</button>
+    <button class="tab-link" onclick="openTab(event, 'update-tab')">Обновить данные</button>
+    <button class="tab-link" onclick="openTab(event, 'delete-tab')">Удалить данные</button>
+  </div>
+  <div id="predict-tab" class="tab-content">
+    <h2>Прогноз</h2>
+    <form action="{{url_for('prediction')}}" method="post">
+      <table>
+        <tr>
+          <td><label for="age">Возраст:</label></td>
+          <td><input type="text" id="age" autocomplete="on" name="age"></td>
+        </tr>
+        <tr>
+          <td><label for="anaemia">Анемия:</label></td>
+          <td><input type="checkbox" id="anaemia" name="anaemia"></td>
+        </tr>
+        <tr>
+          <td><label for="creatinine_phosphokinase">Креатинин-фосфокиназа:</label></td>
+          <td><input type="number" step="any" id="creatinine_phosphokinase" name="creatinine_phosphokinase"></td>
+        </tr>
+        <tr>
+          <td><label for="diabetes">Диабет:</label></td>
+          <td><input type="checkbox" id="diabetes" name="diabetes"></td>
+        </tr>
+        <tr>
+          <td><label for="ejection_fraction">Процент выброса:</label></td>
+          <td><input type="number" step="any" id="ejection_fraction" name="ejection_fraction"></td>
+        </tr>
+        <tr>
+          <td><label for="high_blood_pressure">Гипертония:</label></td>
+          <td><input type="checkbox" id="high_blood_pressure" name="high_blood_pressure"></td>
+        </tr>
+        <tr>
+          <td><label for="platelets">Тромбоциты:</label></td>
+          <td><input type="number" step="any" id="platelets" name="platelets"></td>
+        </tr>
+        <tr>
+          <td><label for="serum_creatinine">Сывороточный креатинин:</label></td>
+          <td><input type="number" step="any" id="serum_creatinine" name="serum_creatinine"></td>
+        </tr>
+        <tr>
+          <td><label for="serum_sodium">Сывороточный натрий:</label></td>
+          <td><input type="number" step="any" id="serum_sodium" name="serum_sodium"></td>
+        </tr>
+        <tr>
+          <td><label for="sex">Пол:</label></td>
+          <td>
+            <input type="radio" id="female" name="sex" value="female"> <label for="female">Женский</label><br>
+            <input type="radio" id="male" name="sex" value="male"> <label for="male">Мужской</label>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="smoking">Курение:</label></td>
+          <td>
+            <input type="checkbox" id="smoking" name="smoking">
+            <!-- <input type="checkbox" id="smoking_сheck" name="smoking_check"> <label> Н/Д</label> -->
+          </td>
+        </tr>
+        <tr>
+          <td><label for="time_period">Период наблюдения:</label></td>
+          <td><input type="number" step="any" id="time_period" name="time_period"></td>
+        </tr>
+      </table>
+      <br>
+      <input type="submit" value="Оценка риска">
+      <br>
+      <br>
+      <div>Вероятность риска ССЗ: {{ data.probability }}%</div>
+      <br>
+      <div>Точность модели: {{ data.accuracy }}%</div>
+      <div>Погрешность от количества введенных параметров: {{data.AccurParam}}% </div>
+    </form>
+  </div>
+  <div id="add-tab" class="tab-content">
+    <h2>Добавить данные</h2>
+    <form action="{{url_for('add_data')}}" method="post">
+      <table>
+        <tr>
+          <td><label for="age">Возраст:</label></td>
+          <td><input type="number" id="age_add" name="age_add"></td>
+        </tr>
+        <tr>
+          <td><label for="anaemia">Анемия:</label></td>
+          <td><input type="checkbox" id="anaemia_add" name="anaemia_add"></td>
+        </tr>
+        <tr>
+          <td><label for="creatinine_phosphokinase">Креатинин-фосфокиназа:</label></td>
+          <td><input type="number" step="any" id="creatinine_phosphokinase_add" name="creatinine_phosphokinase_add">
+          </td>
+        </tr>
+        <tr>
+          <td><label for="diabetes">Диабет:</label></td>
+          <td><input type="checkbox" id="diabetes_add" name="diabetes_add"></td>
+        </tr>
+        <tr>
+          <td><label for="ejection_fraction">Процент выброса:</label></td>
+          <td><input type="number" step="any" id="ejection_fraction_add" name="ejection_fraction_add"></td>
+        </tr>
+        <tr>
+          <td><label for="high_blood_pressure">Гипертония:</label></td>
+          <td><input type="checkbox" id="high_blood_pressure_add" name="high_blood_pressure_add"></td>
+        </tr>
+        <tr>
+          <td><label for="platelets">Тромбоциты:</label></td>
+          <td><input type="number" step="any" id="platelets_add" name="platelets_add"></td>
+        </tr>
+        <tr>
+          <td><label for="serum_creatinine">Сывороточный креатинин:</label></td>
+          <td><input type="number" step="any" id="serum_creatinine_add" name="serum_creatinine_add"></td>
+        </tr>
+        <tr>
+          <td><label for="serum_sodium">Сывороточный натрий:</label></td>
+          <td><input type="number" step="any" id="serum_sodium_add" name="serum_sodium_add"></td>
+        </tr>
+        <tr>
+          <td><label for="sex">Пол:</label></td>
+          <td>
+            <input type="radio" id="female_add" name="sex_add" value="female"> <label for="female">Женский</label><br>
+            <input type="radio" id="male_add" name="sex_add" value="male"> <label for="male">Мужской</label>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="smoking">Курение:</label></td>
+          <td><input type="checkbox" id="smoking_add" name="smoking_add"></td>
+        </tr>
+        <tr>
+          <td><label for="time_period">Период наблюдения:</label></td>
+          <td><input type="number" step="any" id="time_period_add" name="time_period_add"></td>
+        </tr>
+      </table>
+      <input type="submit" value="Добавить в базу">
+    </form>
+  </div>
+  <div id="update-tab" class="tab-content">
+    <h2>Обновить данные</h2>
+    <!-- Здесь может быть содержимое вкладки Обновить данные -->
+  </div>
+  <div id="delete-tab" class="tab-content">
+    <h2>Удалить данные</h2>
+    <!-- Здесь может быть содержимое вкладки Удалить данные -->
+  </div>
+  <script src="{{url_for('static', filename = 'js/script.js')}}"></script>
+</body>
+
+</html>
