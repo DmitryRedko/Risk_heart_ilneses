@@ -45,7 +45,7 @@ def db_init():
                             platelets INTEGER,
                             serum_creatinine REAL,
                             serum_sodium INTEGER,
-                            sex VARCHAR(10),
+                            sex REAL,
                             smoking BOOLEAN,
                             time INTEGER,
                             death_event INTEGER
@@ -138,3 +138,31 @@ def upload_model_from_db(model_name):
                 return loaded_model,acc
             else:
                 print("Модель с указанным названием не найдена в базе данных.")
+
+def get_whrere(dict_info):
+    wh = ''
+    # keys = dictionary.keys()
+    for key, value in dict_info.items():
+        if value is not None and value!='' and key!='male' and key!='female':
+            wh+=str(key) +'='+str(value)+' AND '
+    print(wh)
+    return wh[:-5]
+
+
+
+def select(info_dict):
+    cond = get_whrere(info_dict)
+    result = ''
+    if(bool(cond)):
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT * "
+                        "FROM patients "
+                        f"WHERE {cond}")
+            result = cursor.fetchall()
+    else:
+         with conn.cursor() as cursor:
+            cursor.execute("""SELECT * 
+                        FROM patients """)
+            result = cursor.fetchall()
+        
+    return result

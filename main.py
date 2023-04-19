@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, url_for
 from mlModels import Models, createTrainTest, NormalaizeTrainTest, predict, predict_proba, accuracy, save_model, choose_best
 import pandas as pd
-from database import db_init, insret, find_helthy_top, upload_model_from_db
+from database import db_init, insret, find_helthy_top, upload_model_from_db, select
 from functions import check_for_none, get_status
 import webbrowser
 import numpy as np
@@ -39,7 +39,7 @@ db_init()
 
 @app.route('/')
 def home():
-    return render_template('index.html', data={})
+    return render_template('index.html', dataPredict={}, dataAdd = {}, dataUpdate={})
 
 
 @app.route('/add_post', methods=['POST', 'GET'])
@@ -60,7 +60,7 @@ def add_data():
            info_dict['high_blood_pressure'], info_dict['platelets'], info_dict['serum_creatinine'], info_dict['serum_sodium'], info_dict['sex'], info_dict['smoking'], info_dict['time'])
 
     print('Данные успешно добавлены в базу данных!')
-    return render_template('index.html', data={})
+    return render_template('index.html', dataPredict={}, dataAdd = {}, dataUpdate={})
 
 
 @app.route('/prediction', methods=['POST', 'GET'])
@@ -89,17 +89,57 @@ def prediction():
 
     X_train, X_test, y_train, y_test = createTrainTest(data, "DEATH_EVENT")
     X_train, X_test = NormalaizeTrainTest(X_train, X_test)
-    models = [Models().RFC(X_train, y_train),Models().KNN(X_train, y_train), Models().LR(X_train, y_train), Models().KernelSVM(
-        X_train, y_train), Models().NBayes(X_train, y_train), Models().tree(X_train, y_train)]
-    model, acc, model_name = choose_best(X_test, y_test, models)
-    save_model(model, acc, model_name)
-    # print("--------------------",model_name,"----------------------------")
-    uploaded,acc = upload_model_from_db('last')
+    # models = [Models().RFC(X_train, y_train), Models().KNN(X_train, y_train), Models().LR(X_train, y_train), Models().KernelSVM(
+    #     X_train, y_train), Models().NBayes(X_train, y_train), Models().tree(X_train, y_train)]
+    # model, acc, model_name = choose_best(X_test, y_test, models)
+    # save_model(model, acc, model_name)
+    # # print("--------------------",model_name,"----------------------------")
+    uploaded, acc = upload_model_from_db('last')
 
     prob = predict_proba([[info_dict['age'], info_dict['anaemia'], info_dict['creatinine_phosphokinase'], info_dict['diabetes'], info_dict['ejection_fraction'],
                            info_dict['high_blood_pressure'], info_dict['platelets'], info_dict['serum_creatinine'], info_dict['serum_sodium'], info_dict['sex'], info_dict['smoking'], info_dict['time']]], uploaded)
 
-    return render_template('index.html', data={'status': f'({get_status(prob[0][1])})', 'accuracy': f'{round(acc*100, 3)} %', 'probability': f'{round(prob[0][1]*100, 3)} %', 'AccurParam': f'{round(100-(12 - missing_checkboxes - empty_field)/12*100)} %'})
+    info_dict['status'] =  f'({get_status(prob[0][1])})'
+    info_dict['accuracy'] =  f'{round(acc*100, 3)} %'
+    info_dict['probability'] = f'{round(prob[0][1]*100, 3)} %'
+    info_dict['AccurParam'] = f'{round(100-(12 - missing_checkboxes - empty_field)/12*100)} %'
+    return render_template('index.html', dataAdd = {}, dataUpdate = {}, dataPredict=info_dict)
+
+
+@app.route('/update', methods=['POST', 'GET'])
+def update():
+    columns = ['age', 'creatinine_phosphokinase', 'ejection_fraction', 'platelets',
+               'serum_creatinine', 'serum_sodium', 'sex', 'time']
+    columns_checkboxes = ['diabetes',
+                          'high_blood_pressure', 'smoking', 'anaemia']
+    info_dict = {}
+    for name in columns:
+        temp = request.form.get(name)
+        if (temp == 'male'):
+            info_dict["male"] = "checked"
+            temp = 0.0
+        elif (temp == 'female'):
+            info_dict["female"] = "checked"
+            temp = 1.0
+        info_dict[name] = temp
+    
+
+    for name in columns_checkboxes:
+        if bool(request.form.get(name+'_check')) == 0:
+            info_dict[name] = bool(request.form.get(name))
+        else:
+            info_dict[name] = ''
+    
+    db_info = db=select(info_dict)
+
+    for name in columns_checkboxes:
+        if bool(request.form.get(name+'_check')) == 0:
+            if(bool(info_dict[name])):
+                info_dict[name] = "checked"
+        else:
+            info_dict[name+'_check'] = 'checked'
+
+    return render_template('index.html', dataPredict = {}, dataAdd = {}, dataUpdate=info_dict, db=db_info)
 
 
 if __name__ == '__main__':

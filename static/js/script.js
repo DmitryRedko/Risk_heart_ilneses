@@ -11,4 +11,4 @@ function openTab(event, tabName) {
     document.getElementById(tabName).style.display = "block";
 }  
 
-openTab(event, 'predict-tab')
+openTab(event, 'update-tab')
