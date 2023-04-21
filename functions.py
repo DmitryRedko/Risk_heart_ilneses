@@ -132,7 +132,7 @@ def add_to_db(request):
     columns = ['age', 'anaemia', 'creatinine_phosphokinase', 'diabetes', 'ejection_fraction', 'high_blood_pressure', 'platelets',
                'serum_creatinine', 'serum_sodium', 'sex', 'smoking', 'time', 'death_event']
     columns_checkboxes = ['diabetes',
-                          'high_blood_pressure', 'smoking', 'anaemia']
+                          'high_blood_pressure', 'smoking', 'anaemia','death_event']
     info_dict = {}
     for name in columns:
         temp = request.form.get(name)
@@ -145,11 +145,11 @@ def add_to_db(request):
         elif (temp is None and name in columns_checkboxes):
             temp = 0
         info_dict[name] = temp
-
+    # print(info_dict)
     for key, value in info_dict.items():
         if key is None or value is None or value == '':
             raise ValueError()
-
+    
     insret(info_dict['age'], bool(info_dict['anaemia']), info_dict['creatinine_phosphokinase'], bool(info_dict['diabetes']), info_dict['ejection_fraction'],
            bool(info_dict['high_blood_pressure']), info_dict['platelets'], info_dict['serum_creatinine'], info_dict['serum_sodium'], info_dict['sex'], bool(info_dict['smoking']), info_dict['time'],info_dict['death_event'])
 
