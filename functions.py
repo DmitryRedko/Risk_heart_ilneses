@@ -1,9 +1,19 @@
 
+
 from mlModels import Models, createTrainTest, NormalaizeTrainTest, predict, predict_proba, accuracy, save_model, choose_best
-import pandas as pd
+""" импортирует функции из файла ml Models для работы с моделями машинного обучения,
+ такие как обучение модели, нормализацию данных, предсказание, расчет точности модели и т.д."""
+import pandas as pd #импортирует модуль Pandas для работы с таблицами данных.
+
 from database import db_init, insret, find_helthy_top, upload_model_from_db, select, update_db,delete_db, get_db
+""" импортирует функции для работы с базой данных, такие как инициализация, вставка данных, поиск и выборка, 
+обновление и удаление данных"""
 
 
+
+""" check_for_none(name, val, empty): Функция проверяет, заполнено ли поле формы. 
+Если поле пустое, то функция возвращает значение, хранящееся в базе данных для здорового человека.
+Если поле заполнено, то функция возвращает введенное значение."""
 def check_for_none(name, val, empty):
     if val == '' or val is None:
         empty+=1
@@ -19,6 +29,9 @@ def check_for_none(name, val, empty):
             val = 0
         return empty,float(val)
 
+"""get_status(x): Функция возвращает категорию вероятности наступления смерти на основе предсказанного значения. 
+Если значение вероятности меньше или равно 0,33, то функция возвращает 'Низкая'. Если значение вероятности 
+меньше или равно 0,67, то функция возвращает 'Средняя'. В противном случае функция возвращает 'Высокая'."""
 def get_status(x):
     if(x<=0.33):
         return "Низкая"
@@ -26,6 +39,11 @@ def get_status(x):
         return "Средняя"
     else:
         return "Высокая"
+
+"""convert_to_normal(dict_info): Функция принимает словарь, содержащий значения медицинских показателей,
+ и возвращает новый словарь, в котором только те показатели, которые необходимы для модели, а именно: 'age', 
+ 'creatinine_phosphokinase', 'ejection_fraction', 'platelets', 'serum_creatinine', 'serum_sodium', 'sex', 
+ 'time', 'diabetes', 'high_blood_pressure', 'smoking', 'anaemia' и 'death_event'"""
 
 def convert_to_normal(dict_info):
     columns = ['age', 'creatinine_phosphokinase', 'ejection_fraction', 'platelets',
@@ -38,6 +56,13 @@ def convert_to_normal(dict_info):
                 new_dict[col] = dict_info[key]
     return new_dict
 
+
+
+"""do_prediction(request): Функция, которая используется для предсказания вероятности наступления смерти на
+основе данных, введенных пользователем в веб-форму. Функция проверяет, заполнены ли все поля формы, и, если
+какое-то поле не заполнено, то вызывается фунция, которая вернет значение для здорового человека. Затем функция
+загружает модель, сохраненную в базе данных, и использует ее для предсказания вероятности развития ССЗ
+на основе введенных данных. Функция также определяет категорию вероятности и возвращает словарь с результатами предсказания."""
 def do_prediction(request):
         # Получение данных из формы на веб-странице
     columns = ['age', 'creatinine_phosphokinase', 'ejection_fraction', 'platelets',
@@ -81,6 +106,11 @@ def do_prediction(request):
 
     return info_dict
 
+"""
+reeducate(): Функция, которая используется для переобучения модели. Функция выбирает лучшую модель
+из нескольких моделей, которые были обучены на основе данных, и сохраняет эту модель в базу данных.
+"""
+
 def reeducate():
     data = get_db()
     print(data)
@@ -92,6 +122,10 @@ def reeducate():
     model, acc, model_name = choose_best(X_test, y_test, models)
     save_model(model, acc, model_name)
     print("Saved model: ",model_name)
+
+""" Функция add_to_db(request) добавляет данные, введенные пользователем на веб-странице, в базу данных. 
+Она получает данные из формы на веб-странице, преобразует значения "male" и "female" в числовой формат,
+ проверяет, являются ли чекбоксы отмеченными, и добавляет данные в базу данных."""
 
 def add_to_db(request):
         # Получение данных из формы на веб-странице
@@ -119,6 +153,10 @@ def add_to_db(request):
     insret(info_dict['age'], bool(info_dict['anaemia']), info_dict['creatinine_phosphokinase'], bool(info_dict['diabetes']), info_dict['ejection_fraction'],
            bool(info_dict['high_blood_pressure']), info_dict['platelets'], info_dict['serum_creatinine'], info_dict['serum_sodium'], info_dict['sex'], bool(info_dict['smoking']), info_dict['time'],info_dict['death_event'])
 
+"""
+Функция запрашивает два словаря из html формы: что изменить(info_dict_from) и на что изменить(info_dict_to),
+в функции update_db обновляет поле в базе. Если обновить не удалось, возвращается ошибка.
+"""
 def action_update(request):
     columns_from = ['age_from', 'creatinine_phosphokinase_from', 'ejection_fraction_from', 'platelets_from',
                     "serum_creatinine_from", 'serum_sodium_from', 'sex_from', 'time_from', '']
@@ -191,6 +229,7 @@ def action_update(request):
         print("Ошибка обновления данных")
     return info_dict_from, info_dict_to
 
+"""Выполняет заданный селект запрос в базу данных в соответствии с критериями"""
 
 def action_select(request):
     columns = ['age', 'creatinine_phosphokinase', 'ejection_fraction', 'platelets',
@@ -237,6 +276,10 @@ def action_select(request):
 
     return database_selected, info_dict
 
+
+"""Выполняет удаление заданной строки которая из формы попадает в info_dict_delete. Если удалить не удалось, 
+то выдается ошибка."""
+
 def action_delete(request):
     columns_delete = ['age_delete', 'creatinine_phosphokinase_delete', 'ejection_fraction_delete', 'platelets_delete',
                     "serum_creatinine_delete", 'serum_sodium_delete', 'sex_delete', 'time_delete', '']
@@ -268,4 +311,8 @@ def action_delete(request):
                 info_dict_delete[name] = "checked"
         else:
             info_dict_delete[name+'_check'] = 'checked'
-    delete_db(convert_to_normal(info_dict_delete))
+    try:
+        delete_db(convert_to_normal(info_dict_delete))
+        print("Строка успешно удалена")
+    except:
+        print("Ошибка удаления данных")
