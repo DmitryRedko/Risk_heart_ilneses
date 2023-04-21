@@ -11,6 +11,7 @@ from sklearn.svm import SVC
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import OneHotEncoder
 import pickle
@@ -101,14 +102,29 @@ class Models:
         best = grid_search.best_estimator_
         print("RFC model is educated")
         return {'model': best, 'name': self.name}
+    
+    def RFR(self, X_train, y_train):
+        print("Start educating RFR model") 
+        self.name = "RandomForestRegressor"
+        param_grid = {
+            'n_estimators': [5,10,15],
+            'max_depth': [5, 10],
+            'max_features': ['auto', 'sqrt'],
+            'min_samples_split': [2,3, 4],
+            'min_samples_leaf': [1, 2, 4]
+        }
+        rfr = RandomForestRegressor()
+        grid_search = GridSearchCV(estimator=rfr, param_grid=param_grid, cv=5, scoring='neg_mean_squared_error')
+        grid_search.fit(X_train, y_train)
+        best = grid_search.best_estimator_
+        print("RFC model is educated")
+        return {'model': best, 'name': self.name}
 
 
 def NormalaizeTrainTest(X_train, X_test):
     scaler = StandardScaler()
     num_cols = ['age', 'creatinine_phosphokinase', 'ejection_fraction',
                 'platelets', 'serum_creatinine', 'serum_sodium', 'time']
-    # X_train[num_cols] = scaler.fit_transform(X_train[num_cols])
-    # X_test[num_cols] = scaler.transform(X_test[num_cols])
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
     with open('scaler.pkl', 'wb') as file:
@@ -132,21 +148,8 @@ def predict(data, model):
 def predict_proba(values_list, model):
     with open('scaler.pkl', 'rb') as file:
         scaler = pickle.load(file)
-    # num_cols = ['age', 'creatinine_phosphokinase', 'ejection_fraction',
-    #             'platelets', 'serum_creatinine', 'serum_sodium', 'time']
-    # header = ['age', 'anaemia', 'creatinine_phosphokinase', 'diabetes',
-    #       'ejection_fraction', 'high_blood_pressure', 'platelets',
-    #       'serum_creatinine', 'serum_sodium', 'sex', 'smoking', 'time']
-    # print(len(values_list[0]))
-    # print(len(header))
-    # data = {header[i]: [values_list[0][i]] for i in range(len(header))}
-    # data = pd.DataFrame(data)
-    # print(data)
-    # data[num_cols] = scaler.transform(data[num_cols])
     data = scaler.transform(values_list)
-    # print(data)
     y_pred = model.predict_proba(data)
-    # print(y_pred)
     return y_pred
 
 
@@ -169,7 +172,8 @@ def choose_best(x_test, y_test, models):
     name=''
     for model in models:
         print(model['name'],end=' ')
-        res = accuracy(predict(x_test, model['model']), y_test)
+        pred = predict(x_test, model['model'])>0.5
+        res = accuracy(pred, y_test)
         print(res)
         if (res > m):
             m = res

@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{{ super() }}
+
+<div id="predict-tab" class="tab-content">
+    <h2>Прогноз</h2>
+    <form action="{{url_for('prediction')}}" method="post">
+        <table>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <label> Н/Д: </label>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="age">Возраст:</label></td>
+                <td><input type="text" id="age" autocomplete="on" name="age" value={{dataPredict.age}}></td>
+            </tr>
+            <tr>
+                <td><label for="anaemia">Анемия:</label></td>
+                <td>
+                    <input type="checkbox" id="anaemia" name="anaemia" {{dataPredict.anaemia}}>
+                </td>
+                <td></td>
+                <td>
+                    <input type="checkbox" id="anaemia_сheck" name="anaemia_check" {{dataPredict.anaemia_check}}>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="creatinine_phosphokinase">Креатинин-фосфокиназа (mcg/L):</label></td>
+                <td><input type="text" step="any" id="creatinine_phosphokinase" name="creatinine_phosphokinase"
+                        value={{dataPredict.creatinine_phosphokinase}}></td>
+            </tr>
+            <tr>
+                <td><label for="diabetes">Диабет:</label></td>
+                <td>
+                    <input type="checkbox" id="diabetes" name="diabetes" {{dataPredict.diabetes}}>
+                </td>
+                <td></td>
+                <td>
+                    <input type="checkbox" id="diabetes_check" name="diabetes_check" {{dataPredict.diabetes_check}}>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="ejection_fraction">Процент выброса (%):</label></td>
+                <td><input type="text" step="any" id="ejection_fraction" name="ejection_fraction"
+                        value={{dataPredict.ejection_fraction}}></td>
+            </tr>
+            <tr>
+                <td><label for="high_blood_pressure">Гипертония:</label></td>
+                <td>
+                    <input type="checkbox" id="high_blood_pressure" name="high_blood_pressure"
+                        {{dataPredict.high_blood_pressure}}>
+                </td>
+                <td></td>
+                <td>
+                    <input type="checkbox" id="high_blood_pressure_check" name="high_blood_pressure_check"
+                        {{dataPredict.high_blood_pressure_check}}>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="platelets">Тромбоциты (kiloplatelets/mL):</label></td>
+                <td><input type="text" step="any" id="platelets" name="platelets" value={{dataPredict.platelets}}></td>
+            </tr>
+            <tr>
+                <td><label for="serum_creatinine">Сывороточный креатинин (mg/dL):</label></td>
+                <td><input type="text" step="any" id="serum_creatinine" name="serum_creatinine"
+                        value={{dataPredict.serum_creatinine}}></td>
+            </tr>
+            <tr>
+                <td><label for="serum_sodium">Сывороточный натрий (mEq/L):</label></td>
+                <td><input type="text" step="any" id="serum_sodium" name="serum_sodium"
+                        value={{dataPredict.serum_sodium}}>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="sex">Пол:</label></td>
+                <td>
+                    <input type="radio" id="female" name="sex" value="female" {{dataPredict.female}}> <label
+                        for="female">Женский</label><br>
+                    <input type="radio" id="male" name="sex" value="male" {{dataPredict.male}}> <label
+                        for="male">Мужской</label>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="smoking">Курение:</label></td>
+                <td>
+                    <input type="checkbox" id="smoking" name="smoking" {{dataPredict.smoking}}>
+                <td></td>
+                </td>
+                <td>
+                    <input type="checkbox" id="smoking_сheck" name="smoking_check" {{dataPredict.smoking_check}}>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="time">Период наблюдения (дни):</label></td>
+                <td><input type="text" step="any" id="time" name="time" , value={{dataPredict.time}}></td>
+            </tr>
+        </table>
+        <br>
+        <input type="submit" value="Оценка риска" name = "predict_button">
+        <br>
+        <br>
+        <div>Вероятность риска ССЗ: {{ dataPredict.probability }} {{dataPredict.status}}</div>
+        <br>
+        <div>Точность модели: {{ dataPredict.accuracy }}</div>
+        <div>Погрешность от количества введенных параметров: {{dataPredict.AccurParam}} </div>
+    </form>
+
+</div>
+
+{% endblock %}

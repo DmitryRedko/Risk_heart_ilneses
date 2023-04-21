@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, url_for
 from mlModels import Models, createTrainTest, NormalaizeTrainTest, predict, predict_proba, accuracy, save_model, choose_best
 import pandas as pd
-from database import db_init, insret, find_helthy_top, upload_model_from_db, select
-from functions import check_for_none, get_status
+from database import db_init
+from functions import check_for_none, get_status, convert_to_normal, do_prediction, add_to_db, action_select,action_update, action_delete,reeducate
 import webbrowser
 import numpy as np
 import warnings
@@ -10,25 +10,7 @@ import warnings
 # Отключение предупреждений
 warnings.filterwarnings("ignore")
 
-
-# def outlier_limits(data, col):
-#     Q3 = data[col].quantile(0.75)
-#     Q1 = data[col].quantile(0.25)
-#     IQR = Q3 - Q1
-#     UL = Q3 + 1.5*IQR
-#     LL = Q1 - 1.5*IQR
-#     return UL, LL
-
-
 data = pd.read_csv('archive\heart_failure_clinical_records_dataset.csv')
-# data['age_group'] = np.nan
-# data.loc[(data['age'] < 65), 'age_group'] = 0
-# data.loc[(data['age'] >= 65), 'age_group'] = 1
-
-# for col in ['creatinine_phosphokinase', 'platelets', 'serum_creatinine']:
-#     UL, LL = outlier_limits(data, col)
-#     data[col] = np.where((data[col] > UL), UL, data[col])
-#     data[col] = np.where((data[col] < LL), LL, data[col])
 
 app = Flask(__name__)
 
@@ -39,107 +21,64 @@ db_init()
 
 @app.route('/')
 def home():
-    return render_template('index.html', dataPredict={}, dataAdd = {}, dataUpdate={})
+    return render_template('predict.html', dataPredict={}, dataAdd={}, dataUpdate={}, dataDelete={})
 
 
-@app.route('/add_post', methods=['POST', 'GET'])
+@app.route('/add', methods=['POST', 'GET'])
 def add_data():
-    # Получение данных из формы на веб-странице
-    columns = ['age', 'anaemia', 'creatinine_phosphokinase', 'diabetes', 'ejection_fraction', 'high_blood_pressure', 'platelets',
-               'serum_creatinine', 'serum_sodium', 'sex', 'smoking', 'time', 'death_event']
-    info_dict = {}
-    for name in columns:
-        temp = request.form.get(name)
-        if (temp == 'male'):
-            temp = 0
-        elif (temp == 'female'):
-            temp = 1
-        info_dict[name] = temp
-
-    insret(info_dict['age'], info_dict['anaemia'], info_dict['creatinine_phosphokinase'], info_dict['diabetes'], info_dict['ejection_fraction'],
-           info_dict['high_blood_pressure'], info_dict['platelets'], info_dict['serum_creatinine'], info_dict['serum_sodium'], info_dict['sex'], info_dict['smoking'], info_dict['time'])
-
-    print('Данные успешно добавлены в базу данных!')
-    return render_template('index.html', dataPredict={}, dataAdd = {}, dataUpdate={})
+    if "add_button" in request.form:
+        try:
+                add_to_db(request)
+                print('Данные успешно добавлены в базу данных!')
+        except:
+            print('Ошибка добавления!')
+        
+    if "reeducate_button" in request.form:
+        try:
+            reeducate()
+            print('Модели обучены на новых данных!')
+        except:
+            print('Ошибка обучения!')
+    return render_template('add.html',dataAdd={})
 
 
 @app.route('/prediction', methods=['POST', 'GET'])
 def prediction():
-    # Получение данных из формы на веб-странице
-    columns = ['age', 'creatinine_phosphokinase', 'ejection_fraction', 'platelets',
-               'serum_creatinine', 'serum_sodium', 'sex', 'time']
-    columns_checkboxes = ['diabetes',
-                          'high_blood_pressure', 'smoking', 'anaemia']
-    info_dict = {}
-    empty_field = 0
-    for name in columns:
-        empty_field, info_dict[name] = check_for_none(
-            name, request.form.get(name), empty_field)
-
-    missing_checkboxes = 0
-    fictval = 0
-    for name in columns_checkboxes:
-        if bool(request.form.get(name+'_check')) == 0:
-            info_dict[name] = int(bool(request.form.get(name)))
-        else:
-            missing_checkboxes += 1
-            fictval, info_dict[name] = check_for_none(
-                name, request.form.get(name), fictval)
-            info_dict[name] = int(bool(name))
-
-    X_train, X_test, y_train, y_test = createTrainTest(data, "DEATH_EVENT")
-    X_train, X_test = NormalaizeTrainTest(X_train, X_test)
-    # models = [Models().RFC(X_train, y_train), Models().KNN(X_train, y_train), Models().LR(X_train, y_train), Models().KernelSVM(
-    #     X_train, y_train), Models().NBayes(X_train, y_train), Models().tree(X_train, y_train)]
-    # model, acc, model_name = choose_best(X_test, y_test, models)
-    # save_model(model, acc, model_name)
-    # # print("--------------------",model_name,"----------------------------")
-    uploaded, acc = upload_model_from_db('last')
-
-    prob = predict_proba([[info_dict['age'], info_dict['anaemia'], info_dict['creatinine_phosphokinase'], info_dict['diabetes'], info_dict['ejection_fraction'],
-                           info_dict['high_blood_pressure'], info_dict['platelets'], info_dict['serum_creatinine'], info_dict['serum_sodium'], info_dict['sex'], info_dict['smoking'], info_dict['time']]], uploaded)
-
-    info_dict['status'] =  f'({get_status(prob[0][1])})'
-    info_dict['accuracy'] =  f'{round(acc*100, 3)} %'
-    info_dict['probability'] = f'{round(prob[0][1]*100, 3)} %'
-    info_dict['AccurParam'] = f'{round(100-(12 - missing_checkboxes - empty_field)/12*100)} %'
-    return render_template('index.html', dataAdd = {}, dataUpdate = {}, dataPredict=info_dict)
-
+    info_dict=''
+    if "predict_button" in request.form:
+        info_dict = do_prediction(request)
+    return render_template('predict.html',  dataPredict=info_dict)
 
 @app.route('/update', methods=['POST', 'GET'])
 def update():
-    columns = ['age', 'creatinine_phosphokinase', 'ejection_fraction', 'platelets',
-               'serum_creatinine', 'serum_sodium', 'sex', 'time']
-    columns_checkboxes = ['diabetes',
-                          'high_blood_pressure', 'smoking', 'anaemia']
-    info_dict = {}
-    for name in columns:
-        temp = request.form.get(name)
-        if (temp == 'male'):
-            info_dict["male"] = "checked"
-            temp = 0.0
-        elif (temp == 'female'):
-            info_dict["female"] = "checked"
-            temp = 1.0
-        info_dict[name] = temp
+    info_dict={}
+    info_dict_from={}
+    info_dict_to={}
+    db_info = ''
+    if "select_button" in request.form:
+        db_info, info_dict = action_select(request)
     
+    if "update_button" in request.form:
+        info_dict_from, info_dict_to = action_update(request)
+        db_info, info_dict = action_select(request)
 
-    for name in columns_checkboxes:
-        if bool(request.form.get(name+'_check')) == 0:
-            info_dict[name] = bool(request.form.get(name))
-        else:
-            info_dict[name] = ''
+    return render_template('update.html', dataUpdate=info_dict | info_dict_to | info_dict_from, db=db_info)
+
+@app.route('/delete', methods=['POST', 'GET'])
+def delete():
+    info_dict={}
+    info_dict_delete={}
+    db_info = ''
     
-    db_info = db=select(info_dict)
+    if "select_button" in request.form:
+        db_info, info_dict = action_select(request)
+    
+    if "delete_button" in request.form:
+        # info_dict_from, info_dict_to = action_delete(request)
+        action_delete(request)
+        db_info, info_dict = action_select(request)
 
-    for name in columns_checkboxes:
-        if bool(request.form.get(name+'_check')) == 0:
-            if(bool(info_dict[name])):
-                info_dict[name] = "checked"
-        else:
-            info_dict[name+'_check'] = 'checked'
-
-    return render_template('index.html', dataPredict = {}, dataAdd = {}, dataUpdate=info_dict, db=db_info)
+    return render_template('delete.html', dataDelete =  info_dict | info_dict_delete, db=db_info)
 
 
 if __name__ == '__main__':

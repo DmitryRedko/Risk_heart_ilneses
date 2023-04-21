@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Определение вероятности наличия сердечно-сосудистых патологий</title>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename = 'css/style.css')}}">
+</head>
+
+<body>
+    {% block content -%}
+    <h1>Определение вероятности наличия сердечно-сосудистых патологий</h1>
+    <div class="tab">
+        <a href="/prediction"><button class="tab-link">Прогноз</button></a>
+        <a href="/add"><button class="tab-link">Добавить данные</button></a>
+        <a href="/update"><button class="tab-link">Обновить данные</button></a>
+        <a href="/delete"><button class="tab-link">Удалить данные</button></a>
+    </div>
+    {% endblock -%}
+
+</body>
+
+</html>

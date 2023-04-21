@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{{ super() }}
+
+<div id="add-tab" class="tab-content">
+    <h2>Добавить данные</h2>
+    <form action="{{url_for('add_data')}}" method="post">
+        <table>
+            <tr>
+                <td><label for="age">Возраст:</label></td>
+                <td><input type="text" id="age" name="age" value={{dataAdd.age}}></td>
+            </tr>
+            <tr>
+                <td><label for="anaemia">Анемия:</label></td>
+                <td><input type="checkbox" id="anaemia" name="anaemia"></td>
+            </tr>
+            <tr>
+                <td><label for="creatinine_phosphokinase">Креатинин-фосфокиназа (mcg/L):</label></td>
+                <td><input type="text" step="any" id="creatinine_phosphokinase" name="creatinine_phosphokinase"
+                        value={{dataAdd.creatinine_phosphokinase}}>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="diabetes">Диабет:</label></td>
+                <td><input type="checkbox" id="diabetes" name="diabetes"></td>
+            </tr>
+            <tr>
+                <td><label for="ejection_fraction">Процент выброса (%):</label></td>
+                <td><input type="text" step="any" id="ejection_fraction" name="ejection_fraction"
+                        value={{dataAdd.ejection_fraction}}></td>
+            </tr>
+            <tr>
+                <td><label for="high_blood_pressure">Гипертония:</label></td>
+                <td><input type="checkbox" id="high_blood_pressure" name="high_blood_pressure"></td>
+            </tr>
+            <tr>
+                <td><label for="platelets">Тромбоциты (kiloplatelets/mL):</label></td>
+                <td><input type="text" step="any" id="platelets" name="platelets" value={{dataAdd.platelets}}></td>
+            </tr>
+            <tr>
+                <td><label for="serum_creatinine">Сывороточный креатинин (mg/dL):</label></td>
+                <td><input type="text" step="any" id="serum_creatinine" name="serum_creatinine"
+                        value={{dataAdd.serum_creatinine}}></td>
+            </tr>
+            <tr>
+                <td><label for="serum_sodium">Сывороточный натрий (mEq/L):</label></td>
+                <td><input type="text" step="any" id="serum_sodium" name="serum_sodium" value={{dataAdd.serum_sodium}}>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="sex">Пол:</label></td>
+                <td>
+                    <input type="radio" id="female" name="sex" value="female"> <label for="female">Женский</label><br>
+                    <input type="radio" id="male" name="sex" value="male"> <label for="male">Мужской</label>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="smoking">Курение:</label></td>
+                <td><input type="checkbox" id="smoking" name="smoking"></td>
+            </tr>
+            <tr>
+                <td><label for="time">Период наблюдения (дни):</label></td>
+                <td><input type="text" step="any" id="time" name="time" value={{dataAdd.time}}></td>
+            </tr>
+            <td><label for="death_event">Клинический случай:</label></td>
+                <td>
+                    <input type="checkbox" id="death_event" name="death_event"
+                        {{dataAdd.death_event}}>
+                </td>
+        </table>
+        <input type="submit" value="Добавить в базу" name = "add_button">
+        <br><br>
+        <input type="submit" value="Переобучить модель" name = "reeducate_button">
+    </form>
+</div>
+
+{% endblock %}

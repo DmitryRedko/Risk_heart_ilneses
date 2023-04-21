@@ -1,0 +1,465 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{{ super() }}
+
+<div id="update-tab" class="tab-content">
+    <h2>Обновить данные</h2>
+    <form action="{{url_for('update')}}" method="post">
+        <table>
+            <tr>
+                <td>
+                    <h3>Найти записи в базе</h3>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <h3>Старые значения</h3>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <h3>Новые значения</h>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <h3>Н/Д:</h3>
+                </td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><label for="age">Возраст:</label></td>
+                <td><input type="text" id="age" autocomplete="on" name="age" value={{dataUpdate.age}}></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="age">Возраст:</label></td>
+                <td><input type="text" id="age_from" autocomplete="on" name="age_from" value={{dataUpdate.age_from}}>
+                </td>
+                <td></td>
+                <td></td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="age">Возраст:</label></td>
+                <td><input type="text" id="age_to" autocomplete="on" name="age_to" value={{dataUpdate.age_to}}></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><label for="anaemia">Анемия:</label></td>
+                <td>
+                    <input type="checkbox" id="anaemia" name="anaemia" {{dataUpdate.anaemia}}>
+                </td>
+                <td></td>
+                <td>
+                    <input type="checkbox" id="anaemia_сheck" name="anaemia_check" {{dataUpdate.anaemia_check}}>
+                </td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="anaemia">Анемия:</label></td>
+                <td>
+                    <input type="checkbox" id="anaemia_from" name="anaemia_from" {{dataUpdate.anaemia_from}}>
+                </td>
+                <td></td>
+                <td></td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="anaemia">Анемия:</label></td>
+                <td>
+                    <input type="checkbox" id="anaemia_to" name="anaemia_to" {{dataUpdate.anaemia_to}}>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><label for="creatinine_phosphokinase">Креатинин-фосфокиназа (mcg/L):</label></td>
+                <td><input type="text" step="any" id="creatinine_phosphokinase" name="creatinine_phosphokinase"
+                        value={{dataUpdate.creatinine_phosphokinase}}></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="creatinine_phosphokinase">Креатинин-фосфокиназа (mcg/L):</label></td>
+                <td><input type="text" step="any" id="creatinine_phosphokinase_from"
+                        name="creatinine_phosphokinase_from" value={{dataUpdate.creatinine_phosphokinase_from}}>
+                </td>
+                <td></td>
+                <td></td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="creatinine_phosphokinase">Креатинин-фосфокиназа (mcg/L):</label></td>
+                <td><input type="text" step="any" id="creatinine_phosphokinase_to" name="creatinine_phosphokinase_to"
+                        value={{dataUpdate.creatinine_phosphokinase_to}}></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="diabetes">Диабет:</label></td>
+                <td>
+                    <input type="checkbox" id="diabetes" name="diabetes" {{dataUpdate.diabetes}}>
+                </td>
+                <td></td>
+                <td>
+                    <input type="checkbox" id="diabetes_check" name="diabetes_check" {{dataUpdate.diabetes_check}}>
+                </td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="diabetes">Диабет:</label></td>
+                <td>
+                    <input type="checkbox" id="diabetes_from" name="diabetes_from" {{dataUpdate.diabetes_from}}>
+                </td>
+                <td></td>
+                <td>
+                </td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="diabetes">Диабет:</label></td>
+                <td>
+                    <input type="checkbox" id="diabetes_to" name="diabetes_to" {{dataUpdate.diabetes_to}}>
+                </td>
+                <td></td>
+                <td>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="ejection_fraction">Процент выброса (%):</label></td>
+                <td><input type="text" step="any" id="ejection_fraction" name="ejection_fraction"
+                        value={{dataUpdate.ejection_fraction}}></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="ejection_fraction">Процент выброса (%):</label></td>
+                <td><input type="text" step="any" id="ejection_fraction_from" name="ejection_fraction_from"
+                        value={{dataUpdate.ejection_fraction_from}}></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="ejection_fraction">Процент выброса (%):</label></td>
+                <td><input type="text" step="any" id="ejection_fraction_to" name="ejection_fraction_to"
+                        value={{dataUpdate.ejection_fraction_to}}></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="high_blood_pressure">Гипертония:</label></td>
+                <td>
+                    <input type="checkbox" id="high_blood_pressure" name="high_blood_pressure"
+                        {{dataUpdate.high_blood_pressure}}>
+                </td>
+                <td></td>
+                <td>
+                    <input type="checkbox" id="high_blood_pressure_check" name="high_blood_pressure_check"
+                        {{dataUpdate.high_blood_pressure_check}}>
+                </td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="high_blood_pressure">Гипертония:</label></td>
+                <td>
+                    <input type="checkbox" id="high_blood_pressure_from" name="high_blood_pressure_from"
+                        {{dataUpdate.high_blood_pressure_from}}>
+                </td>
+                <td></td>
+                <td>
+                </td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="high_blood_pressure">Гипертония:</label></td>
+                <td>
+                    <input type="checkbox" id="high_blood_pressure_to" name="high_blood_pressure_to"
+                        {{dataUpdate.high_blood_pressure_to}}>
+                </td>
+                <td></td>
+                <td>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="platelets">Тромбоциты (kiloplatelets/mL):</label></td>
+                <td><input type="text" step="any" id="platelets" name="platelets" value={{dataUpdate.platelets}}></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="platelets">Тромбоциты (kiloplatelets/mL):</label></td>
+                <td><input type="text" step="any" id="platelets_from" name="platelets_from"
+                        value={{dataUpdate.platelets_from}}></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="platelets">Тромбоциты (kiloplatelets/mL):</label></td>
+                <td><input type="text" step="any" id="platelets_to" name="platelets_to"
+                        value={{dataUpdate.platelets_to}}></td>
+            </tr>
+            <tr>
+                <td><label for="serum_creatinine">Сывороточный креатинин (mg/dL):</label></td>
+                <td><input type="text" step="any" id="serum_creatinine" name="serum_creatinine"
+                        value={{dataUpdate.serum_creatinine}}></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="serum_creatinine">Сывороточный креатинин (mg/dL):</label></td>
+                <td><input type="text" step="any" id="serum_creatinine_from" name="serum_creatinine_from"
+                        value={{dataUpdate.serum_creatinine_from}}></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="serum_creatinine">Сывороточный креатинин (mg/dL):</label></td>
+                <td><input type="text" step="any" id="serum_creatinine_to" name="serum_creatinine_to"
+                        value={{dataUpdate.serum_creatinine_to}}></td>
+
+            </tr>
+            <tr>
+                <td><label for="serum_sodium">Сывороточный натрий (mEq/L):</label></td>
+                <td><input type="text" step="any" id="serum_sodium" name="serum_sodium"
+                        value={{dataUpdate.serum_sodium}}>
+                </td>
+                <td></td>
+                <td></td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="serum_sodium">Сывороточный натрий (mEq/L):</label></td>
+                <td><input type="text" step="any" id="serum_sodium_from" name="serum_sodium_from"
+                        value={{dataUpdate.serum_sodium_from}}></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="serum_sodium">Сывороточный натрий (mEq/L):</label></td>
+                <td><input type="text" step="any" id="serum_sodium_to" name="serum_sodium_to"
+                        value={{dataUpdate.serum_sodium_to}}></td>
+            </tr>
+            <tr>
+                <td><label for="sex">Пол:</label></td>
+                <td>
+                    <input type="radio" id="female" name="sex" value="female" {{dataUpdate.female}}> <label
+                        for="female">Женский</label><br>
+                    <input type="radio" id="male" name="sex" value="male" {{dataUpdate.male}}> <label
+                        for="male">Мужской</label><br>
+                    <input type="radio" id="unisex" name="sex" value="unisex" {{dataUpdate.unisex}}> <label
+                        for="male">Мужской и
+                        женский</label>
+                </td>
+                <td></td>
+                <td></td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="sex">Пол:</label></td>
+                <td>
+                    <input type="radio" id="female" name="sex_from" value="female" {{dataUpdate.female_from}}> <label
+                        for="female">Женский</label><br>
+                    <input type="radio" id="male" name="sex_from" value="male" {{dataUpdate.male_from}}> <label
+                        for="male">Мужской</label>
+                </td>
+                <td></td>
+                <td></td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="sex">Пол:</label></td>
+                <td>
+                    <input type="radio" id="female" name="sex_to" value="female" {{dataUpdate.female_to}}> <label
+                        for="female">Женский</label><br>
+                    <input type="radio" id="male" name="sex_to" value="male" {{dataUpdate.male_to}}> <label
+                        for="male">Мужской</label>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="smoking">Курение:</label></td>
+                <td>
+                    <input type="checkbox" id="smoking" name="smoking" {{dataUpdate.smoking}}>
+                <td></td>
+                </td>
+                <td>
+                    <input type="checkbox" id="smoking_сheck" name="smoking_check" {{dataUpdate.smoking_check}}>
+                </td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="smoking">Курение:</label></td>
+                <td>
+                    <input type="checkbox" id="smoking_from" name="smoking_from" {{dataUpdate.smoking_from}}>
+                <td></td>
+                </td>
+                <td>
+                </td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="smoking">Курение:</label></td>
+                <td>
+                    <input type="checkbox" id="smoking_to" name="smoking_to" {{dataUpdate.smoking_to}}>
+                <td></td>
+                </td>
+                <td>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="time">Период наблюдения (дни):</label></td>
+                <td><input type="text" step="any" id="time" name="time" value={{dataUpdate.time}}></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="time">Период наблюдения (дни):</label></td>
+                <td><input type="text" step="any" id="time_from" name="time_from" value={{dataUpdate.time_from}}></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="time">Период наблюдения (дни):</label></td>
+                <td><input type="text" step="any" id="time_to" name="time_to" value={{dataUpdate.time_to}}></td>
+            <tr>
+                <td><label for="death_event">Клинический случай:</label></td>
+                <td>
+                    <input type="checkbox" id="death_event" name="death_event" {{dataUpdate.death_event}}>
+                <td></td>
+                </td>
+                <td>
+                    <input type="checkbox" id="death_event_сheck" name="death_event_check"
+                        {{dataUpdate.death_event_check}}>
+                </td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="death_event">Клинический случай:</label></td>
+                <td>
+                    <input type="checkbox" id="death_event_from" name="death_event_from"
+                        {{dataUpdate.death_event_from}}>
+                <td></td>
+                </td>
+                <td>
+                </td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td><label for="death_event">Клинический случай:</label></td>
+                <td>
+                    <input type="checkbox" id="death_event_to" name="death_event_to" {{dataUpdate.death_to}}>
+                <td></td>
+                </td>
+                <td>
+                </td>
+            </tr>
+            <tr></tr>
+            <tr>
+                <td>
+                    <input type="submit" value="Найти в базе" , name='select_button'>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <input type="submit" value="Обновить данные в базе" , name='update_button'>
+                </td>
+                <td>
+                    <p style="margin-left: 10px;"></p>
+                </td>
+                <td>
+                    <!-- <input type="submit" value="Оценка риска"> -->
+                </td>
+            </tr>
+        </table>
+        <br>
+    </form>
+    {% block database %}
+    <table id="data" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Возраст</th>
+                <th>Анемия</th>
+                <th>Креатинин-фосфокиназа (mcg/L)</th>
+                <th>Диабет</th>
+                <th>Процент выброса (%)</th>
+                <th>Гипертония</th>
+                <th>Тромбоциты (kiloplatelets/mL)</th>
+                <th>Сывороточный креатинин (mg/dL)</th>
+                <th>Сывороточный натрий (mEq/L)</th>
+                <th>Пол: 0-мужчина 1-женщина</th>
+                <th>Курение</th>
+                <th>Период наблюдения (дни)</th>
+                <th>Клинический случай</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in db %}
+            <tr>
+                <td>{{ row[1]}}</td>
+                <td>{{ row[2] }}</td>
+                <td>{{ row[3]}}</td>
+                <td>{{ row[4]}}</td>
+                <td>{{ row[5]}}</td>
+                <td>{{ row[6] }}</td>
+                <td>{{ row[7]}}</td>
+                <td>{{ row[8]}}</td>
+                <td>{{ row[9]}}</td>
+                <td>{{ row[10] }}</td>
+                <td>{{ row[11]}}</td>
+                <td>{{ row[12] }}</td>
+                <td>{{ row[13] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endblock %}
+</div>
+
+{% endblock %}
