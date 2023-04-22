@@ -159,7 +159,7 @@ def add_to_db(request):
 """
 def action_update(request):
     columns_from = ['age_from', 'creatinine_phosphokinase_from', 'ejection_fraction_from', 'platelets_from',
-                    "serum_creatinine_from", 'serum_sodium_from', 'sex_from', 'time_from', '']
+                    "serum_creatinine_from", 'serum_sodium_from', 'sex_from', 'time_from']
     columns_checkboxes_from = ['diabetes_from',
                                'high_blood_pressure_from', 'smoking_from', 'anaemia_from', 'death_event_from']
     info_dict_from = {}
@@ -181,13 +181,6 @@ def action_update(request):
                 info_dict_from[name] = int(bool(request.form.get(name)))
         else:
             info_dict_from[name] = ''
-
-    for name in columns_checkboxes_from:
-        if bool(request.form.get(name+'_check')) == 0:
-            if (bool(info_dict_from[name])):
-                info_dict_from[name] = "checked"
-        else:
-            info_dict_from[name+'_check'] = 'checked'
 
     columns_to = ['age_to', 'creatinine_phosphokinase_to', 'ejection_fraction_to', 'platelets_to',
                   'serum_creatinine_to', 'serum_sodium_to', 'sex_to', 'time_to']
@@ -214,12 +207,9 @@ def action_update(request):
         else:
             info_dict_to[name] = ''
 
-    for name in columns_checkboxes_to:
-        if bool(request.form.get(name+'_check')) == 0:
-            if (bool(info_dict_to[name])):
-                info_dict_to[name] = "checked"
-        else:
-            info_dict_to[name+'_check'] = 'checked'
+    print(info_dict_from)
+    print()
+    print(info_dict_to)
 
     try:
         update_db(convert_to_normal(info_dict_from),
@@ -227,7 +217,40 @@ def action_update(request):
         print("Данные успешно обновлены")
     except:
         print("Ошибка обновления данных")
+
+        for name in columns_checkboxes_from:
+            if bool(request.form.get(name+'_check')) == 0:
+                if (bool(info_dict_from[name])):
+                    info_dict_from[name] = "checked"
+            else:
+                info_dict_from[name+'_check'] = 'checked'
+
+        for name in columns_checkboxes_to:
+            if bool(request.form.get(name+'_check')) == 0:
+                if (bool(info_dict_to[name])):
+                    info_dict_to[name] = "checked"
+            else:
+                info_dict_to[name+'_check'] = 'checked'
+
+    for name in columns_checkboxes_from:
+        if bool(request.form.get(name+'_check')) == 0:
+            if (bool(info_dict_from[name])):
+                info_dict_from[name] = "checked"
+        else:
+            info_dict_from[name+'_check'] = 'checked'
+
+    for name in columns_checkboxes_to:
+        if bool(request.form.get(name+'_check')) == 0:
+            if (bool(info_dict_to[name])):
+                info_dict_to[name] = "checked"
+        else:
+            info_dict_to[name+'_check'] = 'checked'
+
+    print(info_dict_to)
+
     return info_dict_from, info_dict_to
+
+
 
 """Выполняет заданный селект запрос в базу данных в соответствии с критериями"""
 
