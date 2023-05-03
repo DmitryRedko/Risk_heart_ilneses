@@ -327,15 +327,17 @@ def action_delete(request):
                 info_dict_delete[name] = int(bool(request.form.get(name)))
         else:
             info_dict_delete[name] = ''
-
+          
+    try:
+        delete_db(convert_to_normal(info_dict_delete))
+        print("Строка успешно удалена")
+    except:
+        print("Ошибка удаления данных")
+          
     for name in columns_checkboxes_delete:
         if bool(request.form.get(name+'_check')) == 0:
             if (bool(info_dict_delete[name])):
                 info_dict_delete[name] = "checked"
         else:
             info_dict_delete[name+'_check'] = 'checked'
-    try:
-        delete_db(convert_to_normal(info_dict_delete))
-        print("Строка успешно удалена")
-    except:
-        print("Ошибка удаления данных")
+    
